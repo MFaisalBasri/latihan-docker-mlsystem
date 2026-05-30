@@ -47,6 +47,11 @@ jobs:
           RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
+
+      # Debug
+      - name: Check RUN_ID
+        run: |
+          echo "RUN_ID=$RUN_ID"
           
       # Build Docker Model
       - name: Build Docker Model
