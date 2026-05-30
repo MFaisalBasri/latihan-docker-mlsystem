@@ -62,13 +62,9 @@ jobs:
         run: |
           find mlruns/0/models -type f
 
-      - name: Show MLmodel
+      - name: Show MLflow Version
         run: |
-          cat mlruns/0/models/m-c6b4b528ee7a468795856fdffec9a7b1/artifacts/MLmodel
-
-      - name: Debug models folder
-        run: |
-          ls -R mlruns/0/models
+          python -c "import mlflow; print(mlflow.__version__)"
       # -----------------
       
       # Build Docker Model
