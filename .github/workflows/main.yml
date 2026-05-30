@@ -69,8 +69,7 @@ jobs:
       
       # Build Docker Model
       - name: Build Docker Model
-        run: |
-          mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "cc" 
+        run: mlflow models build-docker --model-uri "mlruns/0/models/m-c6b4b528ee7a468795856fdffec9a7b1/artifacts" --name "cc"
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
