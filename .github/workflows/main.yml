@@ -52,14 +52,18 @@ jobs:
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
 
-      - name: Show generated model files
+      - name: Prepare Model Artifact
         run: |
-          find mlruns -name MLmodel -exec echo "==== {} ====" \; -exec cat {} \;
+          mkdir -p deploy
+          cp -r mlruns/0/$RUN_ID/artifacts/model deploy/model
+
+          echo "Model copied:"
+          ls -R deploy
           
       # Build Docker Model
-      - name: Build Docker Model
+      - name: Build Docker Image
         run: |
-          mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "cc" 
+          docker build -t cc .
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
