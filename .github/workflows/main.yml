@@ -40,6 +40,10 @@ jobs:
       - name: Run mlflow project
         run: |
           mlflow run MLproject --env-manager=local 
+
+      - name: Show model conda
+        run: |
+          find mlruns -name conda.yaml -exec cat {} \;
       
       # Get latest run_id
       - name: Get latest MLflow run_id
