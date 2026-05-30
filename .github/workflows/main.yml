@@ -62,9 +62,9 @@ jobs:
         run: |
           find mlruns/0/models -type f
 
-      - name: Show MLmodel
+      - name: Debug models folder
         run: |
-          cat mlruns/0/models/m-95255e3034884e3fba690478da5b230e/artifacts/MLmodel
+          ls -R mlruns/0/models
       # -----------------
       
       # Build Docker Model
