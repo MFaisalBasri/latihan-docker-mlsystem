@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mlflow==2.19.0 
+          pip install mlflow==2.19.0
           
       # Run as a mlflow project
       - name: Run mlflow project
@@ -47,11 +47,11 @@ jobs:
           RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
-      
+          
       # Build Docker Model
-       - name: Build Docker Model
+      - name: Build Docker Model
         run: |
-          mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "cc"
+          mlflow models build-docker --model-uri "runs:/$RUN_ID/model" --name "cc" 
 
       # Login to Docker Hub
       - name: Log in to Docker Hub
