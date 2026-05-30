@@ -1,0 +1,93 @@
+name: CI/CD MLflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  CSV_URL: "MLproject/train_pca.csv"
+  TARGET_VAR: "Credit_Score"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v3
+
+      # Setup Python 3.12.7
+      - name: Set up Python 3.12.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12.7"
+      
+      # Check Env Variables
+      - name: Check Env
+        run: |
+          echo $CSV_URL
+      # Install mlflow
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow  
+          
+      # Run as a mlflow project
+      - name: Run mlflow project
+        run: |
+          mlflow run MLproject --env-manager=local 
+      
+      # Get latest run_id
+      - name: Get latest MLflow run_id
+        run: |
+          RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "Latest run_id: $RUN_ID"
+
+      # DEBUG --------------
+      - name: Debug mlruns
+        run: |
+          find mlruns -maxdepth 2 -type d    
+
+      # Debug
+      - name: Check RUN_ID
+        run: |
+          echo "RUN_ID=$RUN_ID"
+
+      - name: Debug mlruns models
+        run: |
+          find mlruns/0/models -type f
+
+      - name: Show MLflow Version
+        run: |
+          python -c "import mlflow; print(mlflow.__version__)"
+
+      - name: Show mlflow package
+        run: |
+          pip show mlflow
+      # -----------------
+      
+      # Build Docker Model
+      - name: Build Docker Model
+        run: mlflow models build-docker --model-uri "mlruns/0/models/m-c6b4b528ee7a468795856fdffec9a7b1/artifacts" --name "cc"
+
+      # Login to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Tag the Docker image
+      - name: Tag Docker Image
+        run: |
+          docker tag cc ${{ secrets.DOCKER_HUB_USERNAME }}/cc:latest
+
+      # Push Docker image to Docker Hub
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/cc:latest
