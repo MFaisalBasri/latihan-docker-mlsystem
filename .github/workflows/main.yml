@@ -65,6 +65,10 @@ jobs:
       - name: Show MLflow Version
         run: |
           python -c "import mlflow; print(mlflow.__version__)"
+
+      - name: Show mlflow package
+        run: |
+          pip show mlflow
       # -----------------
       
       # Build Docker Model
