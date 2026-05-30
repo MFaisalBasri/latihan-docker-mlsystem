@@ -48,11 +48,17 @@ jobs:
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
 
+      # DEBUG --------------
+      - name: Debug mlruns
+        run: |
+          find mlruns -maxdepth 2 -type d    
+
       # Debug
       - name: Check RUN_ID
         run: |
           echo "RUN_ID=$RUN_ID"
-          
+      # -----------------
+      
       # Build Docker Model
       - name: Build Docker Model
         run: |
