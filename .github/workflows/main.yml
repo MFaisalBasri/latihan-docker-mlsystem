@@ -57,6 +57,10 @@ jobs:
       - name: Check RUN_ID
         run: |
           echo "RUN_ID=$RUN_ID"
+
+      - name: Debug mlruns models
+        run: |
+          find mlruns/0/models -type f
       # -----------------
       
       # Build Docker Model
